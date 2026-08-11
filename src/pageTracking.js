@@ -52,13 +52,10 @@ export function initPageTracking() {
   pageStartTime = Date.now();
   hasSaved = false;
 
+  // pagehide — переход, закрытие вкладки, перезагрузка
   window.addEventListener("pagehide", saveVisit);
-
-  document.addEventListener("visibilitychange", () => {
-    if (document.visibilityState === "hidden") {
-      saveVisit();
-    }
-  });
+  // fallback для браузеров, где pagehide не срабатывает
+  window.addEventListener("beforeunload", saveVisit);
 
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
