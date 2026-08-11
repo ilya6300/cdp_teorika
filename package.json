@@ -1,0 +1,17 @@
+{
+  "name": "script_vite",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite build --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "esbuild": "^0.28.2",
+    "vite": "^8.2.1"
+  }
+}
