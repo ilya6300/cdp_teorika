@@ -26,22 +26,7 @@ function saveVisit() {
   hasSaved = true;
 
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    let visits = [];
-
-    if (raw !== null) {
-      try {
-        const parsed = JSON.parse(raw);
-        if (Array.isArray(parsed)) {
-          visits = parsed;
-        }
-      } catch {
-        visits = [];
-      }
-    }
-
-    visits.push(buildVisitPayload());
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(visits));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildVisitPayload()));
   } catch (error) {
     console.error("Ошибка сохранения page tracking:", error);
   }
