@@ -6,7 +6,7 @@ let hasSaved = false;
 function buildVisitPayload() {
   const durationSec = Math.max(
     0,
-    Math.floor((Date.now() - pageStartTime) / 1000)
+    Math.floor((Date.now() - pageStartTime) / 1000),
   );
 
   return {
@@ -48,6 +48,7 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
+  console.log("initPageTracking");
   pageStartTime = Date.now();
   hasSaved = false;
 
