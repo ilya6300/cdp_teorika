@@ -3,6 +3,7 @@ import { teorikaReg, teorikaAuth } from "./service/api/api.request.js";
 import { checkScenarios } from "./popup.js";
 import { startScheme } from "./leadbotTeorika.js";
 import { getСookiesID, getDateCookie } from "./utils/cookies.js";
+import { initPageTracking } from "./pageTracking.js";
 import styleCss from "./style.css?inline";
 
 window.settingsTeorika = { link: "" };
@@ -24,6 +25,8 @@ const getDataLocal = async (name) => {
 
 window.getСookiesID = getСookiesID;
 window.getDateCookie = getDateCookie;
+
+initPageTracking();
 
 const injectStyles = () => {
   const style = document.createElement("style");

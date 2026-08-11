@@ -1,0 +1,80 @@
+---
+description: Когда и как использовать @docs, @web и проектную документацию Teorika CDP Module. Запрет на выдумывание API и поведения.
+alwaysApply: true
+---
+
+# Источники документации
+
+## Главное правило
+
+**Не выдумывать.** Если информация не найдена в указанных источниках — задать вопрос пользователю или Orchestrator, а не предполагать.
+
+## Обязательный источник — архитектура проекта
+
+| Документ | Путь | Когда читать |
+|---|---|---|
+| **Принципы работы CDP-модуля** | `.cursor/planner/PROJECT_PRINCIPLES.md` | **Все агенты перед началом работы** — Vite-сборка, CORS, bootstrap, API, ограничения |
+
+## Файлы планирования
+
+Все файлы — в `.cursor/planner/`.
+
+| Файл | Назначение | Когда читать |
+|---|---|---|
+| `PLAN.md` | План пользователя | Planner, Architect |
+| `TASKS.md` | Задачи с чекпоинтами (шаблон — в начале файла) | Все агенты |
+| `SPEC.md` | Спецификация **активной** задачи (перезаписывается при смене задачи) | CDP Developer, CDP Reviewer |
+| `SOURCES.md` | Реестр документации и внешних источников | Planner, Architect; **заполняет Orchestrator** (дополняют Planner/Architect) |
+| `PROJECT_DOCS.md` | Постоянная техдокументация проекта | **Только после завершения задачи** (Technical Documentation Writer) |
+| `DONE.md` | Архив завершённых задач | Planner, Orchestrator |
+
+## Где указаны источники для задачи
+
+1. **`.cursor/planner/PROJECT_PRINCIPLES.md`** — архитектурные ограничения и принципы.
+2. **`.cursor/planner/SPEC.md`** — основной документ для разработчика (Architect); спецификация активной задачи.
+3. **Поле «Документация»** в записи задачи в `.cursor/planner/TASKS.md`.
+4. **`.cursor/planner/SOURCES.md`** — реестр документации проекта и внешних источников.
+
+## Как обращаться к документации в Cursor
+
+| Ситуация | Действие |
+|---|---|
+| Архитектура, Vite-сборка, CORS | `@docs .cursor/planner/PROJECT_PRINCIPLES.md` |
+| Техническая спецификация для реализации | `@docs .cursor/planner/SPEC.md` |
+| План и требования | `@docs .cursor/planner/PLAN.md` |
+| Документ из реестра SOURCES.md | `@docs <путь или имя из реестра>` |
+| API Teorika / endpoint из задачи | `@docs` (код `src/service/api/api.config.js`, `api.request.js`) или `@web` |
+| Vite, сборка | `@docs vite.config.js`, `@docs package.json` или `@web` |
+| MDN: CORS, fetch | `@web` + URL из SOURCES.md |
+| Неясно, какой источник нужен | Спросить Planner или пользователя |
+
+## Кто заполняет поле «Документация»
+
+**Planner** при создании задачи указывает все нужные источники:
+- `@docs .cursor/planner/PROJECT_PRINCIPLES.md` — **обязательно** для задач с изменением кода;
+- пути к файлам проекта (`src/teorikaModule.js`, `src/popup.js` и т.д.);
+- `@docs vite.config.js` — при изменении сборки;
+- внешние URL (MDN, Vite docs, Bitrix docs);
+- пометку `@web` — если нужна актуальная информация из интернета;
+- пометку `@docs` — если документ уже в индексе Cursor.
+
+**Architect** при подготовке `SPEC.md` дополняет список, если найдены новые релевантные источники (через Orchestrator).
+
+## Примеры поля «Документация» в задаче
+
+```markdown
+- @docs .cursor/planner/PROJECT_PRINCIPLES.md — Vite-сборка, CORS
+- @docs src/service/api/api.config.js — endpoints CDP
+- @docs src/popup.js — сценарии попапов
+- @docs vite.config.js — конфигурация сборки
+- @web https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS — credentialed requests
+```
+
+## Запрещено
+
+- Реализовывать API-методы без проверки в коде проекта или `PROJECT_PRINCIPLES.md`.
+- Удалять `credentials: "include"` из запросов к `get-cookies` без согласования.
+- Указывать версии библиотек и сигнатуры методов «из памяти» без @web/@docs.
+- Игнорировать `PROJECT_PRINCIPLES.md`, `SPEC.md` и поле «Документация» в задаче.
+- Обновлять `.cursor/planner/PROJECT_DOCS.md` до завершения задачи.
+- Создавать локальные тестовые HTML-страницы или папку `testData/` в проекте.

@@ -1,0 +1,68 @@
+---
+description: Глобальные правила workflow агентов Teorika CDP Module. Разделение ролей, переключение агентов, статусы задач.
+alwaysApply: true
+---
+
+# Workflow агентов Teorika CDP Module
+
+**Источник правды по архитектуре:** `.cursor/planner/PROJECT_PRINCIPLES.md` — читать перед любой задачей.
+
+## Разделение ролей (строго)
+
+| Действие | Кто может |
+|---|---|
+| Писать production-код | CDP Developer |
+| Code Review | CDP Reviewer |
+| Менять TASKS.md, SPEC.md, DONE.md и статусы | **только Orchestrator** |
+| Писать план в PLAN.md | **пользователь** (Planner прорабатывает) |
+| Переключать на другого агента | **только Orchestrator** |
+
+Ни один агент, кроме Orchestrator, не передаёт задачу другому агенту самостоятельно.
+Агент завершает свою часть и возвращает результат Orchestrator.
+
+## Файлы планирования
+
+Все файлы — в `.cursor/planner/`. В агентах допустимы короткие имена (`TASKS.md`), но путь всегда `.cursor/planner/TASKS.md`.
+
+| Файл | Назначение | Кто заполняет |
+|---|---|---|
+| `PROJECT_PRINCIPLES.md` | Архитектура, Vite-сборка, CORS, bootstrap | Planner / Architect (дополняют через Orchestrator) |
+| `PLAN.md` | План пользователя | Пользователь + Planner |
+| `TASKS.md` | Список задач с чекпоинтами (шаблон — в начале файла) | Orchestrator (текст от Planner) |
+| `SPEC.md` | Спецификация **активной** задачи (перезаписывается при смене задачи) | Orchestrator (текст от Architect) |
+| `SOURCES.md` | Реестр документации и внешних источников | Orchestrator (дополняют Planner/Architect) |
+| `PROJECT_DOCS.md` | Постоянная техдокументация проекта | Technical Documentation Writer **после** завершения задачи |
+| `DONE.md` | Архив завершённых задач | Orchestrator |
+
+## Жизненный цикл задачи
+
+```
+Пользователь (PLAN.md) → Planner → TASKS.md → Architect → SPEC.md → CDP Developer → CDP Reviewer → [документация] → DONE
+```
+
+При замечаниях Reviewer цикл: CDP Developer → CDP Reviewer (макс. 5 раз).
+
+Если агент не может продолжить из-за нехватки данных — возвращает Orchestrator отчёт с пометкой **`Needs Clarification`** (не додумывает сам).
+
+## Зацикливание
+
+При 3-м цикле Developer→Reviewer Orchestrator запрашивает анализ причины у Architect.
+При 5-м цикле — остановка, отчёт пользователю с анализом и рекомендациями.
+
+## Документация и внешние источники
+
+Перед реализацией разработчик **обязан** читать:
+
+1. `.cursor/planner/PROJECT_PRINCIPLES.md` — архитектурные ограничения (Vite-сборка, CORS, bootstrap);
+2. `.cursor/planner/SPEC.md` — спецификация активной задачи;
+3. поле «Документация» в задаче (`.cursor/planner/TASKS.md`) и `.cursor/planner/SOURCES.md`.
+
+`.cursor/planner/PROJECT_DOCS.md` обновляется **только после** завершения задачи (Technical Documentation Writer).
+Не выдумывать API, поведение библиотек и бизнес-правила.
+Тестирование — через собранный бандл из https://github.com/ilya6300/cdp_teorika.git на embed-окружении (сайт клиента). Локальных тестовых страниц в проекте нет.
+Подробности: `documentation-sources.mdc`.
+
+## Orchestrator
+
+Единственная точка входа для пользователя. Координирует всех агентов.
+Описание: `.cursor/agents/orchestrator.md`

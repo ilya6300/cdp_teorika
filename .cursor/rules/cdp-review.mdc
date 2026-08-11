@@ -1,0 +1,138 @@
+---
+description: Стандарты Code Review JavaScript CDP-модуля Teorika. Vite-сборка, CORS, bootstrap, DOM, API.
+globs:
+- "**/*.js"
+- "**/*.css"
+alwaysApply: false
+---
+
+# Стандарты Code Review Teorika CDP Module
+
+## Обязательный источник
+
+Проверяй соответствие **`.cursor/planner/PROJECT_PRINCIPLES.md`**.
+
+---
+
+## Назначение
+
+Проверка изменений embed-скрипта перед принятием: корректность, архитектура, CORS, влияние на сайты клиентов Bitrix.
+
+---
+
+## Когда применять
+
+- Pull Requests, новый функционал, исправления, рефакторинг
+- Изменения в `src/teorikaModule.js`, `src/popup.js`, `src/leadbotTeorika.js`, `src/service/api/*`, `src/utils/*`, `src/style.css`
+- Изменения в `vite.config.js` (при затрагивании сборки)
+
+---
+
+## Философия ревью
+
+- Проверять корректность и влияние на embed-окружение (cross-origin, DOM клиента).
+- Сохранять архитектуру проекта.
+- **Не** переписывать рабочий код ради стиля.
+- **Не** одобрять нарушения PROJECT_PRINCIPLES.md.
+
+---
+
+## Архитектурная проверка
+
+### Vite-сборка и импорты (критично)
+
+- [ ] Импорты — только между файлами внутри `src/` (ES-модули)
+- [ ] Нет runtime `import()` для модулей проекта (всё в бандле)
+- [ ] Нет циклических зависимостей, ломающих сборку
+- [ ] `npm run build` проходит без ошибок
+- [ ] Формат выхода — IIFE (`dist/teorikaModule.js`)
+
+### Bootstrap и порядок загрузки
+
+- [ ] Bootstrap-блок в `src/teorikaModule.js` не нарушен
+- [ ] Виджеты инициализируются после `DOMContentLoaded`
+- [ ] Нет раннего auto-run виджетов до готовности DOM
+
+### CORS (критично)
+
+- [ ] Новые fetch-запросы учитывают cross-origin
+- [ ] `get-cookies` сохраняет `credentials: "include"`
+- [ ] Не добавлены credentialed requests без понимания whitelist на backend
+
+---
+
+## Проверка модулей
+
+| Модуль | На что смотреть |
+|---|---|
+| `src/teorikaModule.js` | Globals на window, оркестрация, порядок загрузки, injectStyles |
+| `src/service/api/api.config.js` | URL endpoints, формат fetch, обработка ошибок |
+| `src/service/api/api.request.js` | normalizeUserData, mast_id |
+| `src/popup.js` | Сценарии, DOM, статистика, cookie |
+| `src/leadbotTeorika.js` | Схема, форма, валидация, sendLead |
+| `src/utils/cookies.js` | get-cookies, credentials |
+| `src/style.css` | Классы виджетов, конфликты с CSS клиента |
+
+---
+
+## DOM и виджеты
+
+- Виджеты не ломают layout сайта клиента
+- Удаление/пересоздание контейнеров при re-render
+- Нет утечек слушателей (onclick на создаваемых элементах — допустимо для текущей архитектуры)
+- Валидация форм перед отправкой
+
+---
+
+## API
+
+- Endpoints соответствуют `src/service/api/api.config.js` и PROJECT_PRINCIPLES.md
+- Payload не выдуман — сверка с существующими вызовами
+- Ошибки API обрабатываются, пользователь видит сообщение
+
+---
+
+## Globals window
+
+- Не удалены/переименованы публичные API (`getСookiesID`, `setPoliticsLink`, `teorikaReg`)
+- Новые globals — только если указано в SPEC
+
+---
+
+## Безопасность
+
+- Нет утечки PII в console.log
+- Безопасная работа с `innerHTML` / `script_data`
+- Нет hardcoded secrets
+
+---
+
+## Качество кода
+
+- DRY, KISS — без over-engineering
+- Минимальный diff (`safe-changes.mdc`)
+- Существующие `console.error` / логи не удалены без причины
+- Именование понятное, async/await
+
+---
+
+## Формат замечаний
+
+Для каждой проблемы:
+
+1. **Что не так**
+2. **Почему это проблема** (особенно для CORS, bootstrap, сборки)
+3. **Как исправить**
+
+Если код соответствует SPEC и PROJECT_PRINCIPLES — одобрить без искусственных замечаний.
+
+---
+
+## Блокирующие замечания (reject)
+
+- Нарушение порядка bootstrap / DOMContentLoaded
+- Удаление credentials из get-cookies
+- Выдуманные API endpoints
+- Изменение поведения вне scope задачи
+- Сборка (`npm run build`) не проходит
+- Моки/заглушки в `src/`

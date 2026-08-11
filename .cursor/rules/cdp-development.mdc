@@ -1,0 +1,219 @@
+---
+description: Стандарты разработки JavaScript CDP-модуля Teorika — embed-скрипт для Bitrix 1С. Vite-сборка, CORS, DOM, API.
+globs:
+- "**/*.js"
+- "**/*.css"
+alwaysApply: false
+---
+
+# Стандарты разработки Teorika CDP Module
+
+## Обязательный источник
+
+Перед любой реализацией читай **`.cursor/planner/PROJECT_PRINCIPLES.md`**.
+
+---
+
+## Назначение
+
+Embed-скрипт (Customer Data Platform) для сторонних сайтов на Bitrix 1С:
+
+- идентификация через cookie `mast_id`;
+- попапы и маркетинговые сценарии;
+- leadbot / чат-бот;
+- регистрация и авторизация в CDP через API Teorika.
+
+Исходники в `src/`, сборка Vite → `dist/teorikaModule.js` (IIFE). Публикуется в https://github.com/ilya6300/cdp_teorika.git и подключается на сайтах клиентов.
+
+---
+
+## Когда применять
+
+- `src/teorikaModule.js` — точка входа, bootstrap, оркестрация
+- `src/service/api/*.js` — конфигурация и запросы к CDP
+- `src/popup.js` — сценарии попапов
+- `src/leadbotTeorika.js` — чат-бот, лиды в Bitrix
+- `src/utils/cookies.js` — cookie-утилиты
+- `src/style.css` — стили виджетов
+- `vite.config.js` — конфигурация сборки (при изменении сборки)
+
+---
+
+## Перед началом работы
+
+1. Прочитай `.cursor/planner/PROJECT_PRINCIPLES.md`, `.cursor/planner/SPEC.md` и активную задачу в `.cursor/planner/TASKS.md`.
+2. Изучи затронутые модули: логику, **CSS** (`src/style.css`), **построение DOM** (создание/обновление элементов в `src/popup.js`, `src/leadbotTeorika.js`).
+3. **Только после полноценного понимания задачи** приступай к коду.
+
+**Строго запрещено додумывать самому.** При нехватке вводных — отчёт Orchestrator с пометкой **`Needs Clarification`** (что неясно, что проверено, что уточнить). Не реализуй на предположениях.
+
+---
+
+## Архитектурные ограничения (строго)
+
+### Vite-сборка и импорты
+
+Исходники в `src/` — ES-модули. Vite собирает их в единый IIFE `dist/teorikaModule.js`.
+
+**Разрешено:** `import` / `export` между файлами внутри `src/`.
+
+**Запрещено без архитектурного решения (Architect + SPEC):**
+
+- runtime `import()` для загрузки модулей проекта;
+- добавление фреймворков (React, Vue) без явного требования;
+- изменение формата выхода (не IIFE).
+
+При добавлении модулей учитывать циклические зависимости — сборка упадёт.
+
+### Порядок инициализации
+
+```
+globals на window → DOMContentLoaded → injectStyles() → виджеты (popup, leadbot)
+```
+
+Не менять этот порядок без архитектурного решения (Architect + PROJECT_PRINCIPLES.md).
+
+### CORS
+
+- Все модули и API — cross-origin (`client-site.ru` → `teorika.ru`).
+- Запросы к `get-cookies` — только с `credentials: "include"`.
+- Не удалять credentials без согласования с backend.
+- При новых fetch-вызовах учитывать preflight и whitelist origin на сервере.
+
+### Сборка и деплой
+
+```bash
+npm run build   # → dist/teorikaModule.js
+npm run dev     # watch-режим
+```
+
+После изменений в `src/` — пересобрать и запушить в https://github.com/ilya6300/cdp_teorika.git. Тестирование — на embed-окружении (сайт клиента), не через локальные HTML-страницы.
+
+---
+
+## Основные принципы
+
+### DRY, KISS, YAGNI
+
+- Не дублировать логику cookie, fetch, normalizeUserData.
+- Простое решение лучше абстракции.
+- Не добавлять зависимости без явного требования в SPEC.
+
+### Минимальный diff
+
+Следуй `safe-changes.mdc`: менять только то, что требует задача. Не рефакторить «заодно».
+
+### Читаемость
+
+Vanilla JS, ES-модули. Код должен быть понятен без React/TypeScript.
+
+---
+
+## Модули и ответственность
+
+| Модуль | Ответственность |
+|---|---|
+| `src/teorikaModule.js` | Entry-point, bootstrap, globals на `window`, оркестрация |
+| `src/service/api/api.config.js` | URL API, `teorikaFetchJSONApiV1`, `teorikaFetchJsonDC` |
+| `src/service/api/api.request.js` | `teorikaReg`, `teorikaAuth`, нормализация данных формы |
+| `src/popup.js` | Поиск сценариев, рендер попапов, статистика |
+| `src/leadbotTeorika.js` | Схема чат-бота, DOM-виджет, отправка лида |
+| `src/utils/cookies.js` | `getСookiesID`, `getDateCookie` |
+| `src/style.css` | Стили `.lid-bot-*`, попапов |
+
+Бизнес-логика API — в `api.request.js` / `api.config.js`.
+DOM-манипуляции — в `popup.js` / `leadbotTeorika.js`.
+Не смешивать без необходимости.
+
+---
+
+## Работа с DOM
+
+- Виджеты создавать после `DOMContentLoaded` (из entry-point).
+- **Не добавлять** auto-run (`startScheme()` и т.п.) в конце новых модулей без учёта момента загрузки.
+- Перед созданием виджета проверять/удалять существующие контейнеры (см. `renderLidBot`).
+- Использовать существующие CSS-классы (`.lid-bot-*`, `.my_hidden`).
+
+---
+
+## Globals на window
+
+Экспорт на `window` — для совместимости с Bitrix и inline-скриптами клиента:
+
+- `window.settingsTeorika`, `window.setPoliticsLink`
+- `window.getСookiesID`, `window.getDateCookie`
+- `window.teorikaReg` (после инициализации)
+
+Не удалять и не переименовывать без согласования — могут использоваться на сайтах клиентов.
+
+---
+
+## API и fetch
+
+- Endpoints — только из `src/service/api/api.config.js` и `PROJECT_PRINCIPLES.md`.
+- Не выдумывать URL и форматы payload.
+- Всегда `try/catch` вокруг async-операций.
+- Не оставлять пустые `catch`.
+- `async/await` предпочтительнее цепочек Promise.
+
+---
+
+## Cookie и localStorage
+
+- `mast_id` — идентификатор CDP (через API `get-cookies`).
+- `roistat_visit`, `_ym_uid` — атрибуция (читаются с домена клиента).
+- `registration_form_data` — данные формы регистрации из localStorage.
+- `parseCookie` / `getСookiesValue` — существующие утилиты, переиспользовать.
+
+---
+
+## Обработка ошибок
+
+```javascript
+try {
+  // ...
+} catch (error) {
+  console.error("Описание контекста:", error);
+}
+```
+
+Сообщения ошибок должны помогать диагностике на сайте клиента (Network, Console).
+
+---
+
+## Стили
+
+- CSS инлайнится в бандл через `style.css?inline` и вставляется в `<head>` из `teorikaModule.js`.
+- Цвета виджета — из схемы сервера (`scheme.color`).
+- Не хардкодить стили inline без необходимости; использовать классы из `style.css`.
+
+---
+
+## Безопасность
+
+- Не логировать персональные данные (email, phone) без необходимости.
+- Не вставлять `innerHTML` с недоверенным контентом без санитизации.
+- `script_data` из сценариев — только через проверенные механизмы (`createContextualFragment`).
+
+---
+
+## Запрещено
+
+- Моки, фейковые данные, отладочные заглушки в `src/`.
+- Локальные тестовые HTML-страницы в репозитории.
+- Изменение порядка bootstrap → DOMContentLoaded без согласования.
+- Удаление `credentials: "include"` из get-cookies.
+- Добавление фреймворков без явного требования в SPEC.
+- Побочные вызовы при загрузке модуля без учёта DOM.
+
+---
+
+## Перед завершением задачи
+
+- [ ] Прочитан и соблюдён `PROJECT_PRINCIPLES.md`
+- [ ] `npm run build` проходит без ошибок
+- [ ] CORS/credentials не нарушены
+- [ ] Bootstrap-порядок сохранён
+- [ ] Минимальный diff, поведение вне scope не изменено
+- [ ] Ошибки обработаны, существующие логи не удалены
+- [ ] Globals на `window` сохранены
