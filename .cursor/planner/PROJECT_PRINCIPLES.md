@@ -106,7 +106,7 @@ npm run dev          # сборка в watch-режиме
 globals на window (settingsTeorika, cookie-утилиты)
   → DOMContentLoaded
     → injectStyles() (CSS из бандла)
-    → window.teorikaReg
+    → window.teorikaReg, window.teorikaAuth
     → checkScenarios(teorikaConfig)  // popup
     → startScheme()                  // leadbot
     → обработка registration_form_data из localStorage
@@ -124,7 +124,7 @@ Entry-point: `src/teorikaModule.js`.
 
 - `window.settingsTeorika`, `window.setPoliticsLink`
 - `window.getСookiesID`, `window.getDateCookie`
-- `window.teorikaReg` (после инициализации)
+- `window.teorikaReg`, `window.teorikaAuth` (после `DOMContentLoaded`)
 
 Не удалять и не переименовывать без согласования — могут использоваться на сайтах клиентов.
 

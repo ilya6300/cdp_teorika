@@ -100,3 +100,50 @@ Vite-сборка, bootstrap-порядок, credentials.
 - Массив в localStorage без лимита (режим отладки)
 - Будущая интеграция с API — отдельная задача (`sendBeacon` / fetch с `keepalive`)
 
+## [TASK-002] Экспорт teorikaReg/teorikaAuth и исправление bootstrap регистрации
+
+**Дата:** 2026-08-12
+
+### Описание
+
+Публичный API регистрации и авторизации CDP доступен со сторонних сайтов через `window.teorikaReg` и `window.teorikaAuth`. Исправлен bootstrap-обработчик `registration_form_data` из localStorage. Улучшены fetch-обёртки API.
+
+### Причина
+
+План пользователя (PLAN.md): анализ методов `teorikaReg`/`teorikaAuth`, экспорт для embed-сайтов (Timeweb, Bitrix), вызов методов с данными формы по клику на кнопки.
+
+### Реализация
+
+- `src/teorikaModule.js` — экспорт `window.teorikaAuth`; `getDataLocal` с `JSON.parse` и корректным catch; `await getDataLocal(...)`; ветка `event === "auth"` → `teorikaAuth`
+- `src/service/api/api.request.js` — `normalizeUserData` вынесена на уровень модуля; `teorikaAuth` формирует payload без мутации входного объекта; улучшены сообщения в catch
+- `src/service/api/api.config.js` — проверка `res.ok`, `return await res.json()` при успехе, логирование HTTP-ошибок
+
+**Публичный API (после `DOMContentLoaded`):**
+
+| Метод | Назначение | Endpoint |
+|---|---|---|
+| `window.teorikaReg(data)` | Регистрация в CDP | `POST auth/cdp_reg` |
+| `window.teorikaAuth(data)` | Авторизация в CDP | `POST dc/dc/user_info/auth` |
+
+Оба метода нормализуют поля формы (`first_name`, `last_name`, `email`, `phone`), получают `mast_id` через `get-cookies`.
+
+**localStorage bootstrap:** ключ `registration_form_data`, поле `event`: `"registration"` или `"auth"`.
+
+### Влияние
+
+- CORS без изменений; `get-cookies` по-прежнему с `credentials: "include"`
+- Bootstrap-порядок виджетов сохранён
+- `registration_form_data` теперь корректно парсится (ранее flow был сломан)
+- `teorikaAuth` больше не мутирует переданный объект
+- Интеграция на Timeweb — HTML вне репозитория; пример inline-скрипта в SPEC.md
+
+### Деплой
+
+`npm run build` → коммит `dist/teorikaModule.js` → push в https://github.com/ilya6300/cdp_teorika.git
+
+### Ограничения
+
+- `teorikaReg` отправляет запрос даже при отсутствии `mast_id` (существующее поведение)
+- `getСookiesID` без проверки `res.ok` — follow-up
+- Методы не возвращают результат вызывающему коду — follow-up
+

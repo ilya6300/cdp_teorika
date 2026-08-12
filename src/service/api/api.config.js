@@ -14,8 +14,18 @@ export const teorikaFetchJSONApiV1 = async (method, url, data) => {
       },
       body: JSON.stringify(data),
     });
+    if (!res.ok) {
+      console.error(
+        "teorikaFetchJSONApiV1 error:",
+        res.status,
+        url
+      );
+      return null;
+    }
+    return await res.json();
   } catch (e) {
     console.error("teorikaFetchJSONApiV1 error", e);
+    return null;
   }
 };
 // Авторизация в cdp
@@ -28,7 +38,13 @@ export const teorikaFetchJsonDC = async (method, url, data) => {
       },
       body: JSON.stringify(data),
     });
+    if (!res.ok) {
+      console.error("teorikaFetchJsonDC error:", res.status, url);
+      return null;
+    }
+    return await res.json();
   } catch (e) {
     console.error("teorikaFetchJsonDC error", e);
+    return null;
   }
 };

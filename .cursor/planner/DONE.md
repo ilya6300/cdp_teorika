@@ -25,3 +25,28 @@
 ### Документация
 
 См. `.cursor/planner/PROJECT_DOCS.md` — секция TASK-001.
+
+---
+
+## [TASK-002] Экспорт teorikaReg/teorikaAuth и исправление bootstrap регистрации
+
+**Завершено:** 2026-08-12
+
+**Статус:** DONE
+
+**Приоритет:** High
+
+**Циклы Developer→Reviewer:** 1
+
+### Результат
+
+- Экспорт `window.teorikaAuth` (аналогично `window.teorikaReg`)
+- Исправлен `getDataLocal`: JSON.parse, await, ветка `event === "auth"`
+- `normalizeUserData` вынесена на уровень модуля; `teorikaAuth` без мутации входа
+- Fetch-обёртки: проверка `res.ok`, return json
+- Review: APPROVED
+- Сборка: `npm run build` — успешно
+
+### Документация
+
+См. `.cursor/planner/PROJECT_DOCS.md` — секция TASK-002.
