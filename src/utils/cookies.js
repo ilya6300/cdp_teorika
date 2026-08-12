@@ -9,11 +9,15 @@ const parseCookie = (name) => {
 };
 
 export const getСookiesID = async () => {
-  const resCC = await fetch("https://teorika.ru/api/v1/get-cookies", {
+  const resCC = await fetch("https://teorika.ru/api/get-cookies", {
     credentials: "include",
   });
+  if (!resCC.ok) {
+    console.error("getСookiesID error:", resCC.status);
+    return undefined;
+  }
   const r = await resCC.json();
-  return r.cookies.mast_id;
+  return r?.cookies?.mast_id;
 };
 
 export const getDateCookie = async (cookie, url) => {
