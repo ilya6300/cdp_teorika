@@ -18,10 +18,7 @@ function normalizeUserData(input) {
     if (cleanKey.includes("name")) {
       if (cleanKey.includes("last")) {
         result.last_name = String(value);
-      } else if (
-        cleanKey.includes("second") ||
-        cleanKey.includes("father")
-      ) {
+      } else if (cleanKey.includes("second") || cleanKey.includes("father")) {
         result.father_name = String(value);
       } else if (
         cleanKey.includes("first") ||
@@ -44,6 +41,7 @@ export const teorikaReg = async (data) => {
   try {
     const _data = normalizeUserData(data);
     const coockiID = await getСookiesID();
+    return console.log("!teorikaReg", data, _data, coockiID);
     _data.mast_id = coockiID;
 
     await teorikaFetchJSONApiV1("POST", "auth/cdp_reg", _data);
@@ -55,6 +53,7 @@ export const teorikaReg = async (data) => {
 export const teorikaAuth = async (dateCookie) => {
   try {
     const coockiID = await getСookiesID();
+    return console.log("!teorikaAuth", dateCookie, coockiID);
     if (coockiID) {
       const payload = {
         ...dateCookie,
