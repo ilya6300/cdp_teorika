@@ -33,11 +33,6 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
-  console.log("initPageTracking");
-  console.log("initPageTracking1");
-  console.log("initPageTracking2");
-  console.log("initPageTracking3");
-  console.log("initPageTracking");
   pageStartTime = Date.now();
   hasSaved = false;
 
