@@ -55,7 +55,7 @@ const injectStyles = () => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     injectStyles();
-    debugElements();
+    debugElements(buildVisitPayload());
     if (teorikaReg) window.teorikaReg = teorikaReg;
 
     if (teorikaAuth) window.teorikaAuth = teorikaAuth;
