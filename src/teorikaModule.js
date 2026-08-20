@@ -59,15 +59,15 @@ window.addEventListener("DOMContentLoaded", async () => {
     if (teorikaAuth) window.teorikaAuth = teorikaAuth;
 
     return;
-    if (checkScenarios) {
-      await checkScenarios(teorikaConfig);
-    }
+    // if (checkScenarios) {
+    //   await checkScenarios(teorikaConfig);
+    // }
 
-    if (startScheme) {
-      await startScheme();
-    }
+    // if (startScheme) {
+    //   await startScheme();
+    // }
 
-    const dateCookie = await getDataLocal("registration_form_data");
+    // const dateCookie = await getDataLocal("registration_form_data");
 
     // if (dateCookie) {
     //   if (dateCookie.event === "registration") {
