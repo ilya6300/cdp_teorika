@@ -34,9 +34,9 @@ const getDataLocal = async (name) => {
   }
 };
 
-window.getСookiesID = getСookiesID;
+// window.getСookiesID = getСookiesID;
 
-window.getDateCookie = getDateCookie;
+// window.getDateCookie = getDateCookie;
 
 initPageTracking();
 
