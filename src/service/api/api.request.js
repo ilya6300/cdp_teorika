@@ -78,6 +78,7 @@ export const sendPageTracking = async (data) => {
       `${teorikaConfig.uplApi}user_info/page_visit`,
       {
         method: "POST",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
