@@ -1,4 +1,8 @@
-import { teorikaFetchJSONApiV1, teorikaFetchJsonDC } from "./api.config.js";
+import {
+  teorikaConfig,
+  teorikaFetchJSONApiV1,
+  teorikaFetchJsonDC,
+} from "./api.config.js";
 import { getСookiesID } from "../../utils/cookies.js";
 
 function normalizeUserData(input) {
@@ -65,5 +69,27 @@ export const teorikaAuth = async (dateCookie) => {
     }
   } catch (error) {
     console.error("teorikaAuth error:", error);
+  }
+};
+
+export const sendPageTracking = async (data) => {
+  try {
+    const res = await await fetch(
+      `${teorikaConfig.uplApi}user_info/page_visit`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      },
+    );
+    if (!res.ok) {
+      console.error("Не удалось отправить данные на сервер", res.status, url);
+      return null;
+    }
+    return await res.json();
+  } catch (e) {
+    console.error("Не удалось отправить данные на сервер", e);
   }
 };

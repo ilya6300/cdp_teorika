@@ -520,7 +520,7 @@ const renderScenarios = async (r) => {
 };
 
 export const checkScenarios = async (teorikaConfig) => {
-  teoConfig.url = teorikaConfig.urlApiV1;
+  teoConfig.url = teorikaConfig.uplApi;
   await getСookies();
   checkDate();
   try {

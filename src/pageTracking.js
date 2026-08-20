@@ -1,9 +1,11 @@
+import { sendPageTracking } from "./service/api/api.request";
+
 const STORAGE_KEY = "teorika_page_tracking";
 
 let pageStartTime = 0;
 let hasSaved = false;
 
-function checkPlatform() {
+export function checkPlatform() {
   const userAgent = navigator.userAgent;
   const isMobile =
     /mobile|iphone|ipad|android|blackberry|iemobile|opera mini/i.test(
@@ -13,11 +15,11 @@ function checkPlatform() {
   if (isMobile) {
     console.log("Пользователь зашел с телефона или планшета");
     const result = { device_type: "Mobile", description: userAgent };
-    return result
+    return result;
   } else {
     console.log("Пользователь зашел с ПК");
     const result = { device_type: "PC", description: userAgent };
-    return result
+    return result;
   }
 }
 
@@ -50,11 +52,11 @@ function saveVisit() {
   if (hasSaved) {
     return;
   }
-
   hasSaved = true;
-
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(buildVisitPayload()));
+    const visit = buildVisitPayload();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(visit));
+    sendPageTracking(visit);
   } catch (error) {
     console.error("Ошибка сохранения page tracking:", error);
   }
