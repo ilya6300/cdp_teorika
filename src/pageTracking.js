@@ -1,3 +1,4 @@
+import { debugElements } from "./debug_components/debug.elemets";
 import { sendPageTracking } from "./service/api/api.request";
 
 const STORAGE_KEY = "teorika_page_tracking";
@@ -38,13 +39,14 @@ function buildVisitPayload() {
   );
   const deviceInfo = checkPlatform();
   return {
-    page_url: window.location.href,
-    referrer: document.referrer || "",
-    duration_sec: durationSec,
-    entered_at: new Date(pageStartTime).toISOString(),
-    left_at: new Date().toISOString(),
+    flowing_page_url: window.location.href,
+    previous_page_url: document.referrer || "",
+    duration: durationSec,
+    domain_url: window.location.hostname,
     device_type: deviceInfo.device_type,
     description: deviceInfo.description,
+    // entry_page_url: "string",
+    // source_domain: "string",
   };
 }
 
@@ -63,6 +65,7 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
+  debugElements(buildVisitPayload());
   pageStartTime = Date.now();
   hasSaved = false;
 
