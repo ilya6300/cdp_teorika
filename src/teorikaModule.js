@@ -10,6 +10,8 @@ import { teorikaReg, teorikaAuth } from "./service/api/api.request.js";
 
 import { initPageTracking } from "./pageTracking.js";
 
+import { debugElements } from "./debug_components/debug.elemets.js";
+
 import styleCss from "./style.css?inline";
 
 window.settingsTeorika = { link: "" };
@@ -53,7 +55,7 @@ const injectStyles = () => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     injectStyles();
-
+    debugElements();
     if (teorikaReg) window.teorikaReg = teorikaReg;
 
     if (teorikaAuth) window.teorikaAuth = teorikaAuth;
