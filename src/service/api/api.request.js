@@ -74,7 +74,7 @@ export const teorikaAuth = async (dateCookie) => {
 
 export const sendPageTracking = async (data) => {
   try {
-    const res = await await fetch(
+    const res = await fetch(
       `${teorikaConfig.uplApi}user_info/page_visit`,
       {
         method: "POST",
@@ -86,7 +86,7 @@ export const sendPageTracking = async (data) => {
       },
     );
     if (!res.ok) {
-      console.error("Не удалось отправить данные на сервер", res.status, url);
+      console.error("Не удалось отправить данные на сервер", res);
       return null;
     }
     return await res.json();
