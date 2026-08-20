@@ -58,6 +58,7 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     if (teorikaAuth) window.teorikaAuth = teorikaAuth;
 
+    return;
     if (checkScenarios) {
       await checkScenarios(teorikaConfig);
     }
@@ -68,13 +69,13 @@ window.addEventListener("DOMContentLoaded", async () => {
 
     const dateCookie = await getDataLocal("registration_form_data");
 
-    if (dateCookie) {
-      if (dateCookie.event === "registration") {
-        await teorikaReg(dateCookie);
-      } else if (dateCookie.event === "auth") {
-        await teorikaAuth(dateCookie);
-      }
-    }
+    // if (dateCookie) {
+    //   if (dateCookie.event === "registration") {
+    //     await teorikaReg(dateCookie);
+    //   } else if (dateCookie.event === "auth") {
+    //     await teorikaAuth(dateCookie);
+    //   }
+    // }
   } catch (error) {
     console.error("Ошибка виджета теорики:", error);
   }
