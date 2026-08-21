@@ -5,50 +5,69 @@ import {
 } from "./api.config.js";
 import { getСookiesID } from "../../utils/cookies.js";
 
-function normalizeUserData(input) {
+function normalizeUserData(data) {
+  // const result = {
+  //   first_name: "",
+  //   father_name: "",
+  //   last_name: "",
+  //   email: "",
+  //   phone: "",
+  // };
   const result = {
-    first_name: "",
-    father_name: "",
+    // cms_user_id: 0,
+    name: "",
     last_name: "",
+    second_name: "",
+    phones: "",
     email: "",
-    phone: "",
+    // description: "string",
+    domain_url: window.location.hostname,
+    login: "",
+    // device_type: "string",
+    // previous_page_url: "string",
+    // flowing_page_url: "string",
+    // duration: 0,
   };
 
-  for (const [key, value] of Object.entries(input)) {
+  for (const [key, value] of Object.entries(data)) {
     if (value === null || value === undefined) continue;
-
     const cleanKey = key.toLowerCase().replace(/[\[\]_]/g, "");
 
     if (cleanKey.includes("name")) {
       if (cleanKey.includes("last")) {
         result.last_name = String(value);
       } else if (cleanKey.includes("second") || cleanKey.includes("father")) {
-        result.father_name = String(value);
+        result.second_name = String(value);
       } else if (
         cleanKey.includes("first") ||
         cleanKey.endsWith("name") ||
         cleanKey === "name"
       ) {
-        result.first_name = String(value);
+        result.name = String(value);
       }
     } else if (cleanKey.includes("email")) {
       result.email = String(value);
     } else if (cleanKey.includes("phone")) {
-      result.phone = String(value).replace(/\D/g, "");
+      result.phones = String(value).replace(/\D/g, "");
     }
   }
-
+  // проверка на логин
+  if (cleanKey.includes("login")) {
+    result.login = String(value);
+  } else {
+    const login = data.login || data.LOGIN || "";
+    result.login = login;
+  }
   return result;
 }
-
 export const teorikaReg = async (data) => {
   try {
     const _data = normalizeUserData(data);
-    const coockiID = await getСookiesID();
-    return console.log("!teorikaReg", data, _data, coockiID);
-    _data.mast_id = coockiID;
-
-    await teorikaFetchJSONApiV1("POST", "auth/cdp_reg", _data);
+    // const coockiID = await getСookiesID();
+    // return console.log("!teorikaReg", data, _data);
+    // _data.mast_id = coockiID;
+    // return;
+    await teorikaFetchJSONApiV1("POST", "user_info/reg_handler", _data);
   } catch (error) {
     console.error("teorikaReg error:", error);
   }
@@ -74,17 +93,14 @@ export const teorikaAuth = async (dateCookie) => {
 
 export const sendPageTracking = async (data) => {
   try {
-    const res = await fetch(
-      `${teorikaConfig.uplApi}user_info/page_visit`,
-      {
-        method: "POST",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
+    const res = await fetch(`${teorikaConfig.uplApi}user_info/page_visit`, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify(data),
+    });
     if (!res.ok) {
       console.error("Не удалось отправить данные на сервер", res);
       return null;

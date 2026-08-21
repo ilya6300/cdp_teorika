@@ -39,14 +39,14 @@ function buildVisitPayload() {
   );
   const deviceInfo = checkPlatform();
   return {
-    flowing_page_url: window.location.href,
-    previous_page_url: document.referrer || "",
-    duration: durationSec,
-    domain_url: window.location.hostname,
-    device_type: deviceInfo.device_type,
-    description: deviceInfo.description,
-    // entry_page_url: "string",
-    // source_domain: "string",
+    flowing_page_url: window.location.href, // текущая страница
+    previous_page_url: document.referrer || "", // предыдущая страница
+    duration: durationSec, // время нахождения на странице в секундах
+    domain_url: window.location.hostname, // домен
+    device_type: deviceInfo.device_type, // тип устройства
+    description: deviceInfo.description, // описание устройства
+    // entry_page_url: "string", // первая страница
+    // source_domain: "string", // источник
   };
 }
 

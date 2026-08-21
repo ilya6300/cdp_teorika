@@ -2,7 +2,9 @@ const debugMode = true;
 
 export const teorikaConfig = {
   // urlApiV1: "https://teorika.ru/api/v1/v1/",
-  uplApi: !debugMode ?"https://teorika.ru/api/v1/" : "http://10.76.10.145:5059/api/v1/",
+  uplApi: !debugMode
+    ? "https://teorika.ru/api/v1/"
+    : "http://10.76.10.145:5059/api/v1/",
   // urlDC: !debugMode ?"https://teorika.ru/api/v1/dc/dc/" : "http://10.76.10.145:5059/api/v1/dc/dc/",
 };
 
@@ -17,12 +19,13 @@ export const teorikaFetchJSONApiV1 = async (method, url, data) => {
       body: JSON.stringify(data),
     });
     if (!res.ok) {
-      console.error("teorikaFetchJSONApiV1 error:", res.status, url);
+      console.error("Не удалось зарегестрировать пользователя:", res, url);
       return null;
     }
+    console.log("Регистрация пользователя успешна:", res);
     return await res.json();
   } catch (e) {
-    console.error("teorikaFetchJSONApiV1 error", e);
+    console.error("Не удалось зарегестрировать пользователя:", e);
     return null;
   }
 };
