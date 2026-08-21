@@ -52,12 +52,10 @@ function normalizeUserData(data) {
     }
   }
   // проверка на логин
-  if (cleanKey.includes("login")) {
-    result.login = String(value);
-  } else {
-    const login = data.login || data.LOGIN || "";
-    result.login = login;
-  }
+
+  const login = data.login || data.LOGIN || "";
+  result.login = login;
+
   return result;
 }
 export const teorikaReg = async (data) => {
