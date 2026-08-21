@@ -61,6 +61,7 @@ function normalizeUserData(data) {
   return result;
 }
 export const teorikaReg = async (data) => {
+  console.log("!teorikaReg", data);
   try {
     const _data = normalizeUserData(data);
     // const coockiID = await getСookiesID();
@@ -75,6 +76,8 @@ export const teorikaReg = async (data) => {
 
 export const teorikaAuth = async (dateCookie) => {
   try {
+    console.log("!teorikaAuth", dateCookie);
+    return;
     const coockiID = await getСookiesID();
     return console.log("!teorikaAuth", dateCookie, coockiID);
     if (coockiID) {
