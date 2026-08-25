@@ -64,33 +64,31 @@ export const teorikaReg = async (data) => {
   console.log("!teorikaReg", data);
   try {
     const _data = normalizeUserData(data);
-    // const coockiID = await getСookiesID();
-    // return console.log("!teorikaReg", data, _data);
-    // _data.mast_id = coockiID;
-    // return;
     await teorikaFetchJSONApiV1("POST", "user_info/reg_handler", _data);
   } catch (error) {
-    console.error("teorikaReg error:", error);
+    console.error("Ошибка регистрации в теорики:", error);
   }
 };
 
-export const teorikaAuth = async (dateCookie) => {
+export const teorikaAuth = async (_data) => {
   try {
-    console.log("!teorikaAuth", dateCookie);
-    return;
-    const coockiID = await getСookiesID();
-    return console.log("!teorikaAuth", dateCookie, coockiID);
-    if (coockiID) {
-      const payload = {
-        ...dateCookie,
-        mast_id: coockiID,
-        page_url: window.location.href,
+    console.log("!teorikaAuth", _data);
+    if (_data) {
+      const result = {
+        // previous_page_url: "string",
+        // flowing_page_url: "string",
+        // duration: 0,
+        domain_url: window.location.hostname,
+        // device_type: "string",
+        // description: "string",
+        // entry_page_url: "string",
+        // source_domain: "string",
+        login: _data.login || _data.LOGIN || "",
       };
-
-      await teorikaFetchJsonDC("POST", "user_info/auth", payload);
+      await teorikaFetchJsonDC("POST", "user_info/auth_handler", result);
     }
   } catch (error) {
-    console.error("teorikaAuth error:", error);
+    console.error("Ошибка авторизации в теорике:", error);
   }
 };
 
