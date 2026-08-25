@@ -49,12 +49,14 @@ function normalizeUserData(data) {
       result.email = String(value);
     } else if (cleanKey.includes("phone")) {
       result.phones = String(value).replace(/\D/g, "");
+    } else if (cleanKey.includes("login")) {
+      result.login = String(value);
     }
   }
-  // проверка на логин
 
-  const login = data.login || data.LOGIN || "";
-  result.login = login;
+  if (!result.login) {
+    result.login = data.login || data.LOGIN || "";
+  }
 
   return result;
 }
