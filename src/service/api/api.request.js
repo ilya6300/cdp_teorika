@@ -3,7 +3,7 @@ import {
   teorikaFetchJSONApiV1,
   teorikaFetchJsonDC,
 } from "./api.config.js";
-import { getСookiesID } from "../../utils/cookies.js";
+import { getCollectorHeaders, normalizeDomainHost } from "../../utils/domain.js";
 
 function normalizeUserData(data) {
   // const result = {
@@ -21,7 +21,7 @@ function normalizeUserData(data) {
     phones: "",
     email: "",
     // description: "string",
-    domain_url: window.location.hostname,
+    domain_url: normalizeDomainHost(window.location.hostname),
     login: "",
     // device_type: "string",
     // previous_page_url: "string",
@@ -64,7 +64,7 @@ export const teorikaReg = async (data) => {
   console.log("!teorikaReg", data);
   try {
     const _data = normalizeUserData(data);
-    await teorikaFetchJSONApiV1("POST", "user_info/reg_handler", _data);
+    await teorikaFetchJSONApiV1("POST", "datacollector/api/v1/user_info/reg_handler", _data);
   } catch (error) {
     console.error("Ошибка регистрации в теорики:", error);
   }
@@ -78,14 +78,14 @@ export const teorikaAuth = async (_data) => {
         // previous_page_url: "string",
         // flowing_page_url: "string",
         // duration: 0,
-        domain_url: window.location.hostname,
+        domain_url: normalizeDomainHost(window.location.hostname),
         // device_type: "string",
         // description: "string",
         // entry_page_url: "string",
         // source_domain: "string",
         login: _data.login || _data.LOGIN || "",
       };
-      await teorikaFetchJsonDC("POST", "user_info/auth_handler", result);
+      await teorikaFetchJsonDC("POST", "datacollector/api/v1/user_info/auth_handler", result);
     }
   } catch (error) {
     console.error("Ошибка авторизации в теорике:", error);
@@ -94,12 +94,10 @@ export const teorikaAuth = async (_data) => {
 
 export const sendPageTracking = async (data) => {
   try {
-    const res = await fetch(`${teorikaConfig.uplApi}user_info/page_visit`, {
+    const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/page_visit`, {
       method: "POST",
       credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
     if (!res.ok) {

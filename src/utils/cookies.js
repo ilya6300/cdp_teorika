@@ -1,3 +1,6 @@
+import { teorikaConfig } from "../service/api/api.config.js";
+import { normalizeDomainHost } from "./domain.js";
+
 const parseCookie = (name) => {
   const regString = new RegExp(`${name}=(.+?)(;|$)`);
   const results = document.cookie.match(regString);
@@ -8,8 +11,17 @@ const parseCookie = (name) => {
   }
 };
 
+export const getMactIdFromDocumentCookie = () => {
+  const host = normalizeDomainHost(window.location.hostname);
+  const namespaced = parseCookie(`mact_id.${host}`);
+  if (namespaced) {
+    return namespaced;
+  }
+  return parseCookie("mact_id") || undefined;
+};
+
 export const getСookiesID = async () => {
-  const resCC = await fetch("https://teorika.ru/api/get-cookies", {
+  const resCC = await fetch(`${teorikaConfig.url}api/get-cookies`, {
     credentials: "include",
   });
   if (!resCC.ok) {
@@ -17,7 +29,7 @@ export const getСookiesID = async () => {
     return undefined;
   }
   const r = await resCC.json();
-  return r?.cookies?.mast_id;
+  return r?.cookies?.mact_id ?? r?.cookies?.mast_id;
 };
 
 export const getDateCookie = async (cookie, url) => {

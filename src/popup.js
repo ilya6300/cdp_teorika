@@ -1,13 +1,16 @@
+import { teorikaConfig } from "./service/api/api.config";
+
 const teorikaPopup = document.querySelector("#lid-bot-container-hidden");
 const teoConfig = {
-  url: "https://teorika.ru/api/v1/",
   // url: "https://teorika.ru/api/v1/",
-  urlDC: "https://teorika.ru/api/dc/dc/",
+  url: teorikaConfig.url + "api/v1/",
+  // url: "https://teorika.ru/api/v1/",
+  urlDC: teorikaConfig.url + "api/dc/dc/",
   // url: null,
   id: null,
   idEvent: null,
   clickStat: 0,
-  mast_id: "",
+  mact_id: "",
   eventCreate: false,
   viewAllowed: true,
   policyAllowed: true,
@@ -37,7 +40,7 @@ const statFuncIncrement = async (event_id, event) => {
     if (teoConfig.clickStat <= 2) {
       teoConfig.clickStat++;
       const res = await fetch(
-        `${teoConfig.url}report/update_count?id_online_scripts=${Number(event_id)}&mast_id=${teoConfig.mast_id}&event=${event}`,
+        `${teoConfig.url}report/update_count?id_online_scripts=${Number(event_id)}&mast_id=${teoConfig.mact_id}&event=${event}`,
         {
           mode: "no-cors",
         },
@@ -89,20 +92,20 @@ const checkDate = () => {
 };
 
 const getСookies = async () => {
-  const resCC = await fetch("https://teorika.ru/api/get-cookies", {
+  const resCC = await fetch(`${teorikaConfig.url}api/get-cookies`, {
     credentials: "include", // отправляем куки
   });
 
   const r = await resCC.json();
-  teoConfig.mast_id = r.cookies.mast_id;
-  return r.cookies.mast_id;
+  teoConfig.mact_id = r.cookies.mact_id ?? r.cookies.mast_id;
+  return teoConfig.mact_id;
 };
 
 const rtg = async () => {
   const r = await fetch(
     `${
       teoConfig.url
-    }search/?mast_id=${await getСookies()}&url_project=${window.location.origin.replace(
+    }search/?mact_id=${await getСookies()}&url_project=${window.location.origin.replace(
       /\/$/,
       "",
     )}`,
@@ -350,7 +353,7 @@ const renderScenarios = async (r) => {
                       event.data.type_event === "Bitrix24_tasks_teorika_"
                         ? body.nameTask
                         : event.data.name,
-                    mast_id: teoConfig.mast_id,
+                    mact_id: teoConfig.mact_id,
                     responsible: String(body.manager.id),
                   };
                   let btnIDPopup_ = "";
@@ -520,7 +523,7 @@ const renderScenarios = async (r) => {
 };
 
 export const checkScenarios = async (teorikaConfig) => {
-  teoConfig.url = teorikaConfig.uplApi;
+  teoConfig.url = teorikaConfig.url + "api/v1/";
   await getСookies();
   checkDate();
   try {

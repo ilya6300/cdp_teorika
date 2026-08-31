@@ -1,24 +1,25 @@
+import { getCollectorHeaders } from "../../utils/domain.js";
+
 const debugMode = true;
 const $https = true;
 
 const dubugURL = $https
-  ? "https://test.teorika.ru/api/v1/"
-  : "http://10.76.10.145:5059/api/v1/";
+  ? "https://test.teorika.ru/"
+  : "http://10.76.10.145:5059/";
 
 export const teorikaConfig = {
   // urlApiV1: "https://teorika.ru/api/v1/v1/",
-  uplApi: !debugMode ? "https://teorika.ru/api/v1/" : dubugURL,
+  url: !debugMode ? "https://teorika.ru/" : dubugURL,
   // urlDC: !debugMode ?"https://teorika.ru/api/v1/dc/dc/" : "http://10.76.10.145:5059/api/v1/dc/dc/",
 };
 
 // Регистрация в cdp
 export const teorikaFetchJSONApiV1 = async (method, url, data) => {
   try {
-    const res = await fetch(`${teorikaConfig.uplApi}${url}`, {
+    const res = await fetch(`${teorikaConfig.url}${url}`, {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      credentials: "include",
+      headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
     if (!res.ok) {
@@ -36,11 +37,10 @@ export const teorikaFetchJSONApiV1 = async (method, url, data) => {
 // Авторизация в cdp
 export const teorikaFetchJsonDC = async (method, url, data) => {
   try {
-    const res = await fetch(`${teorikaConfig.uplApi}${url}`, {
+    const res = await fetch(`${teorikaConfig.url}${url}`, {
       method: method,
-      headers: {
-        "Content-Type": "application/json",
-      },
+      credentials: "include",
+      headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
     if (!res.ok) {

@@ -1,13 +1,16 @@
+import { teorikaConfig } from "./service/api/api.config";
+import { getMactIdFromDocumentCookie } from "./utils/cookies.js";
+
 const teorikaPopup = document.querySelector("#lid-bot-container-hidden");
 const teoConfig = {
-  url: "https://teorika.ru/api/v1/",
+  url: teorikaConfig.url + "api/v1/",
+  urlDC: teorikaConfig.url + "api/dc/dc/",
   // url: "https://teorika.ru/api/v1/",
-  urlDC: "https://teorika.ru/api/dc/dc/",
   // url: null,
   id: null,
   idEvent: null,
   clickStat: 0,
-  mast_id: "",
+  mact_id: "",
   policyAllowed: true,
 };
 
@@ -45,9 +48,9 @@ export const startScheme = async () => {
 const createScheme = (scheme) => {
   try {
     const lidBot = document.querySelector("body");
-
-    const url = "https://teorika.ru/api/v1/";
-    const urlDC = "https://teorika.ru/api/dc/dc/";
+    const url = teoConfig.url;
+    // const url = "https://teorika.ru/api/v1/";
+    // const urlDC = "https://teorika.ru/api/dc/dc/";
 
     const infoChat = document.createElement("div");
     const myInfoChat = createInfoBlockIcon();
@@ -76,7 +79,12 @@ const createScheme = (scheme) => {
         name: { active: false, value: "", id: "" },
         inn: { active: false, value: "", id: "" },
         application_page: window.location.href,
-        mast_id: getСookiesValue("mast_id"),
+        mact_id:
+          getMactIdFromDocumentCookie() ||
+          (() => {
+            const value = getСookiesValue("mact_id");
+            return value !== "Не найден" ? value : "";
+          })(),
         roistat: getСookiesValue("roistat_visit"),
         metrica: getСookiesValue("_ym_uid"),
         responsible: "",
@@ -251,7 +259,7 @@ const createScheme = (scheme) => {
           email: data.email.value,
           name: data.name.value,
           application_page: data.application_page,
-          mast_id: data.mast_id,
+          mact_id: data.mact_id,
           roistat: data.roistat,
           metrika_client_id: data.metrica,
           responsible: String(data.responsible),
@@ -390,7 +398,7 @@ const createScheme = (scheme) => {
     }
     const sendLead = async (dateRequest) => {
       const res = await fetch(
-        `${urlDC}user_info/add_bitrix_task?filter_user=lead`,
+        `${teoConfig.urlDC}user_info/add_bitrix_task?filter_user=lead`,
         {
           method: "POST",
           // mode: "no-cors",
