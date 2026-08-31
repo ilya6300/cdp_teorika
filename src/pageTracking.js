@@ -12,7 +12,6 @@ export function checkPlatform() {
     /mobile|iphone|ipad|android|blackberry|iemobile|opera mini/i.test(
       userAgent.toLowerCase(),
     );
-    saveVisit()
   if (isMobile) {
     // console.log("Пользователь зашел с телефона или планшета");
     const result = { device_type: "Mobile", description: userAgent };
@@ -66,6 +65,7 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
+  saveVisit()
   // debugElements(buildVisitPayload());
   pageStartTime = Date.now();
   hasSaved = false;
