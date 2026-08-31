@@ -1,4 +1,4 @@
-import { debugElements } from "./debug_components/debug.elemets";
+// import { debugElements } from "./debug_components/debug.elemets";
 import { sendPageTracking } from "./service/api/api.request";
 
 const STORAGE_KEY = "teorika_page_tracking";
@@ -65,7 +65,7 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
-  debugElements(buildVisitPayload());
+  // debugElements(buildVisitPayload());
   pageStartTime = Date.now();
   hasSaved = false;
 
