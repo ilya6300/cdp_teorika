@@ -6,27 +6,14 @@ import {
 import { getCollectorHeaders, normalizeDomainHost } from "../../utils/domain.js";
 
 function normalizeUserData(data) {
-  // const result = {
-  //   first_name: "",
-  //   father_name: "",
-  //   last_name: "",
-  //   email: "",
-  //   phone: "",
-  // };
   const result = {
-    // cms_user_id: 0,
     name: "",
     last_name: "",
     second_name: "",
     phones: "",
     email: "",
-    // description: "string",
     domain_url: normalizeDomainHost(window.location.hostname),
     login: "",
-    // device_type: "string",
-    // previous_page_url: "string",
-    // flowing_page_url: "string",
-    // duration: 0,
   };
 
   for (const [key, value] of Object.entries(data)) {
@@ -75,14 +62,7 @@ export const teorikaAuth = async (_data) => {
     console.log("!teorikaAuth", _data);
     if (_data) {
       const result = {
-        // previous_page_url: "string",
-        // flowing_page_url: "string",
-        // duration: 0,
         domain_url: normalizeDomainHost(window.location.hostname),
-        // device_type: "string",
-        // description: "string",
-        // entry_page_url: "string",
-        // source_domain: "string",
         login: _data.login || _data.LOGIN || "",
       };
       await teorikaFetchJsonDC("POST", "datacollector/api/v1/user_info/auth_handler", result);
@@ -96,7 +76,7 @@ export const sendPageTracking = async (data) => {
   try {
     const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/page_visit`, {
       method: "POST",
-      // credentials: "include",
+      credentials: "include",
       headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
