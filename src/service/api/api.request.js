@@ -97,7 +97,7 @@ export const sendPageTracking = async (data) => {
     const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/page_visit`, {
       method: "POST",
       // credentials: "include",
-      // headers: getCollectorHeaders(),
+      headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
     if (!res.ok) {
