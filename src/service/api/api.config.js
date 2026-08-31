@@ -1,10 +1,13 @@
 const debugMode = true;
+const $https = true;
+
+const dubugURL = $https
+  ? "https://test.teorika.ru/api/v1/"
+  : "http://10.76.10.145:5059/api/v1/";
 
 export const teorikaConfig = {
   // urlApiV1: "https://teorika.ru/api/v1/v1/",
-  uplApi: !debugMode
-    ? "https://teorika.ru/api/v1/"
-    : "http://10.76.10.145:5059/api/v1/",
+  uplApi: !debugMode ? "https://teorika.ru/api/v1/" : dubugURL,
   // urlDC: !debugMode ?"https://teorika.ru/api/v1/dc/dc/" : "http://10.76.10.145:5059/api/v1/dc/dc/",
 };
 
