@@ -1,6 +1,6 @@
 import { teorikaConfig } from "./service/api/api.config.js";
 
-import { teorikaReg, teorikaAuth } from "./service/api/api.request.js";
+import { teorikaReg, teorikaAuth, teorikaInit } from "./service/api/api.request.js";
 
 // import { checkScenarios } from "./popup.js";
 
@@ -53,6 +53,8 @@ const injectStyles = () => {
 window.addEventListener("DOMContentLoaded", async () => {
   try {
     injectStyles();
+
+    teorikaInit()
 
     if (teorikaReg) window.teorikaReg = teorikaReg;
 
