@@ -54,7 +54,7 @@ export const teorikaInit = async () => {
       method: "POST",
       credentials: "include",
       headers: getCollectorHeaders(),
-      body: JSON.stringify({ domain_url: "string" }),
+      body: JSON.stringify({ domain_url: normalizeDomainHost(window.location.hostname) }),
     });
     if (!res.ok) {
       console.error("Не удалось инициализировать пользователя в теорике", res);
