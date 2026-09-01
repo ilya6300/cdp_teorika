@@ -47,8 +47,25 @@ function normalizeUserData(data) {
 
   return result;
 }
+// Инициализация пользователя в теорике
+export const teorikaInit = async () => {
+  try {
+    const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/init`, {
+      method: "POST",
+      credentials: "include",
+      headers: getCollectorHeaders(),
+      body: JSON.stringify({ domain_url: "string" }),
+    });
+    if (!res.ok) {
+      console.error("Не удалось инициализировать пользователя в теорике", res);
+      return null;
+    }
+    // return await res.json()
+  } catch (e) { console.error("Ошибка инициализации пользователя в теорике:", e); }
+}
+
+// Регистрация пользователя в теорике
 export const teorikaReg = async (data) => {
-  console.log("!teorikaReg", data);
   try {
     const _data = normalizeUserData(data);
     await teorikaFetchJSONApiV1("POST", "datacollector/api/v1/user_info/reg_handler", _data);
@@ -57,6 +74,7 @@ export const teorikaReg = async (data) => {
   }
 };
 
+// Авторизация пользователя в теорике
 export const teorikaAuth = async (_data) => {
   try {
     console.log("!teorikaAuth", _data);
@@ -72,6 +90,7 @@ export const teorikaAuth = async (_data) => {
   }
 };
 
+// Отправка данных о посещении страницы на сервер теорики
 export const sendPageTracking = async (data) => {
   try {
     const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/page_visit`, {
