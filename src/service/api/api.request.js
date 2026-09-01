@@ -60,7 +60,7 @@ export const teorikaInit = async () => {
       console.error("Не удалось инициализировать пользователя в теорике", res);
       return null;
     }
-    // return await res.json()
+    return await res.json()
   } catch (e) { console.error("Ошибка инициализации пользователя в теорике:", e); }
 }
 
