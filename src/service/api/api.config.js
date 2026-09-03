@@ -18,7 +18,7 @@ export const teorikaFetchJSONApiV1 = async (method, url, data) => {
   try {
     const res = await fetch(`${teorikaConfig.url}${url}`, {
       method: method,
-      // credentials: "include",
+      credentials: "include",
       headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
@@ -39,7 +39,7 @@ export const teorikaFetchJsonDC = async (method, url, data) => {
   try {
     const res = await fetch(`${teorikaConfig.url}${url}`, {
       method: method,
-      // credentials: "include",
+      credentials: "include",
       headers: getCollectorHeaders(),
       body: JSON.stringify(data),
     });
