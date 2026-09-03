@@ -60,7 +60,8 @@ export const teorikaInit = async () => {
       console.error("Не удалось инициализировать пользователя в теорике", res);
       return null;
     }
-    return await res.json()
+    // init отвечает 200 без тела — text() дочитывает ответ (нужно для Set-Cookie), json() падает на пустом теле
+    await res.text();
   } catch (e) { console.error("Ошибка инициализации пользователя в теорике:", e); }
 }
 
