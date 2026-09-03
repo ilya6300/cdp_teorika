@@ -50,7 +50,7 @@ const injectStyles = () => {
   document.head.append(style);
 };
 
-window.addEventListener("load", async () => {
+document.addEventListener("DOMContentLoaded", async () => {
   try {
     injectStyles();
 
