@@ -16,12 +16,14 @@ export function isValidEmail(value) {
   return trimmed !== "" && EMAIL_PATTERN.test(trimmed);
 }
 
-/** Телефон: мобильный 10–11 цифр (+7/8) или стационарный — 6 цифр. */
+/**
+ * Телефон: 6–11 цифр после нормализации.
+ * 6–7 — короткий/местный стационарный; 10 — с кодом города или мобильный;
+ * 11 — с ведущей 7/8 (+7).
+ */
 export function isValidPhone(value) {
   const digits = normalizePhoneDigits(value);
-  return (
-    digits.length === 6 || digits.length === 10 || digits.length === 11
-  );
+  return digits.length >= 6 && digits.length <= 11;
 }
 
 /** ИНН: 10 или 12 цифр. */
