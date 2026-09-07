@@ -92,7 +92,7 @@ const checkDate = () => {
 };
 
 const getСookies = async () => {
-  const resCC = await fetch(`${teorikaConfig.url}api/get-cookies`, {
+  const resCC = await fetch(`${teorikaConfig.url}datacollector/api/get-cookies`, {
     credentials: "include", // отправляем куки
   });
 

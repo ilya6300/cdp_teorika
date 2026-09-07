@@ -21,7 +21,7 @@ export const getMactIdFromDocumentCookie = () => {
 };
 
 export const getСookiesID = async () => {
-  const resCC = await fetch(`${teorikaConfig.url}api/get-cookies`, {
+  const resCC = await fetch(`${teorikaConfig.url}datacollector/api/get-cookies`, {
     credentials: "include",
   });
   if (!resCC.ok) {
