@@ -16,10 +16,12 @@ export function isValidEmail(value) {
   return trimmed !== "" && EMAIL_PATTERN.test(trimmed);
 }
 
-/** Телефон РФ: 10 или 11 цифр после нормализации (+7/8 допустимы). */
+/** Телефон: мобильный 10–11 цифр (+7/8) или стационарный — 6 цифр. */
 export function isValidPhone(value) {
   const digits = normalizePhoneDigits(value);
-  return digits.length === 10 || digits.length === 11;
+  return (
+    digits.length === 6 || digits.length === 10 || digits.length === 11
+  );
 }
 
 /** ИНН: 10 или 12 цифр. */
