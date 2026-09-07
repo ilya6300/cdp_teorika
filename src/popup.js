@@ -98,7 +98,12 @@ const getСookies = async () => {
 
   const r = await resCC.json();
   console.log("getСookies ===>", r.cookies);
-  teoConfig.mact_id = r.cookies.mact_id ?? r.cookies.mast_id;
+  const host = window.location.host;
+  teoConfig.mact_id =
+    r.cookies[`mact_id.${host}`] ??
+    r.cookies[`mast_id.${host}`] ??
+    r.cookies.mact_id ??
+    r.cookies.mast_id;
   return teoConfig.mact_id;
 };
 
