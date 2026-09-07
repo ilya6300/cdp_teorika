@@ -12,13 +12,12 @@ export function checkPlatform() {
     /mobile|iphone|ipad|android|blackberry|iemobile|opera mini/i.test(
       userAgent.toLowerCase(),
     );
-
   if (isMobile) {
-    console.log("Пользователь зашел с телефона или планшета");
+    // console.log("Пользователь зашел с телефона или планшета");
     const result = { device_type: "Mobile", description: userAgent };
     return result;
   } else {
-    console.log("Пользователь зашел с ПК");
+    // console.log("Пользователь зашел с ПК");
     const result = { device_type: "PC", description: userAgent };
     return result;
   }
@@ -51,6 +50,7 @@ function buildVisitPayload() {
 }
 
 function saveVisit() {
+  console.log("saveVisit");
   if (hasSaved) {
     return;
   }
@@ -65,10 +65,11 @@ function saveVisit() {
 }
 
 export function initPageTracking() {
+
   // debugElements(buildVisitPayload());
   pageStartTime = Date.now();
   hasSaved = false;
-
+  // saveVisit()
   // pagehide — переход, закрытие вкладки, перезагрузка
   window.addEventListener("pagehide", saveVisit);
   // fallback для браузеров, где pagehide не срабатывает
