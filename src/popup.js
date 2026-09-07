@@ -97,6 +97,7 @@ const getСookies = async () => {
   });
 
   const r = await resCC.json();
+  console.log("getСookies ===>", r.cookies);
   teoConfig.mact_id = r.cookies.mact_id ?? r.cookies.mast_id;
   return teoConfig.mact_id;
 };
