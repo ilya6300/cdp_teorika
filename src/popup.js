@@ -1,4 +1,10 @@
 import { teorikaConfig } from "./service/api/api.config";
+import {
+  isValidEmail,
+  isValidInn,
+  isValidPhone,
+  markFieldInvalid,
+} from "./utils/validation.js";
 
 const teorikaPopup = document.querySelector("#lid-bot-container-hidden");
 const teoConfig = {
@@ -337,6 +343,19 @@ const renderScenarios = async (r) => {
                 const bitrix24_tasks_teorika_ = document.querySelector(
                   "#Bitrix24_tasks_teorika_",
                 );
+                let popupSubmitInProgress = false;
+                const disablePopupSubmitButtons = () => {
+                  [
+                    bitrix24_lead_teorika_,
+                    bitrix24_deal_teorika_,
+                    bitrix24_tasks_teorika_,
+                  ].forEach((btn) => {
+                    if (btn) {
+                      btn.style.pointerEvents = "none";
+                      btn.style.opacity = "0.6";
+                    }
+                  });
+                };
                 // Закрыть попап
                 const t3pFormBtn = t3p.querySelector("span.btn");
                 if (t3pFormBtn) {
@@ -345,6 +364,7 @@ const renderScenarios = async (r) => {
                   };
                 }
                 const popupConstructorClick = async () => {
+                  if (popupSubmitInProgress) return;
                   if (!teoConfig.policyAllowed) {
                     // const inptPolicyTeorika_ = document.querySelector(
                     //   "#inpt_policy_teorika_",
@@ -380,9 +400,14 @@ const renderScenarios = async (r) => {
                   let inputErrorFlag = false;
                   const inputError = (nameID, value) => {
                     if (value === "") {
-                      nameID.style.border = "1px solid #df2727";
+                      markFieldInvalid(nameID, false);
                       inputErrorFlag = true;
                     }
+                  };
+                  const validateField = (element, value, validator) => {
+                    const isValid = value !== "" && validator(value);
+                    markFieldInvalid(element, isValid);
+                    if (!isValid) inputErrorFlag = true;
                   };
                   for (let e = 0; e < 40; e++) {
                     const popupElement = document.querySelector(
@@ -394,18 +419,31 @@ const renderScenarios = async (r) => {
                         inputError(popupElement, popupElement.value);
                         dateRequest.name = popupElement.value;
                       }
-                      // if (popupElement.id === "popup_teorika_inn_id_") {
-                      // }
+                      if (popupElement.id === "popup_teorika_inn_id_") {
+                        validateField(
+                          popupElement,
+                          popupElement.value,
+                          isValidInn,
+                        );
+                      }
                       if (popupElement.id === "popup_teorika_phone_id_") {
                         dateRequest.phone = popupElement.value.replace(
                           /[^+0-9]/g,
                           "",
                         );
-                        inputError(popupElement, popupElement.value);
+                        validateField(
+                          popupElement,
+                          popupElement.value,
+                          isValidPhone,
+                        );
                       }
                       if (popupElement.id === "popup_teorika_email_id_") {
                         dateRequest.email = popupElement.value;
-                        inputError(popupElement, popupElement.value);
+                        validateField(
+                          popupElement,
+                          popupElement.value,
+                          isValidEmail,
+                        );
                       }
                       if (event.data.type_event === "Bitrix24_deal_teorika_") {
                         btnIDPopup_ = "deal";
@@ -420,6 +458,8 @@ const renderScenarios = async (r) => {
                     }
                   }
                   if (inputErrorFlag) return;
+                  popupSubmitInProgress = true;
+                  disablePopupSubmitButtons();
                   setTimeout(async () => {
                     const res = await fetch(
                       `${teoConfig.urlDC}user_info/add_bitrix_task?filter_user=${btnIDPopup_}`,

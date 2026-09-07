@@ -1,5 +1,11 @@
 import { teorikaConfig } from "./service/api/api.config";
 import { getMactIdFromDocumentCookie } from "./utils/cookies.js";
+import {
+  isValidEmail,
+  isValidInn,
+  isValidPhone,
+  markFieldInvalid,
+} from "./utils/validation.js";
 
 const teorikaPopup = document.querySelector("#lid-bot-container-hidden");
 const teoConfig = {
@@ -232,26 +238,28 @@ const createScheme = (scheme) => {
         e.preventDefault();
         inputErrorFlag = false;
         const errorCheck = (condition, name) => {
-          if (condition && data[name].active) {
-            const searchInptError = document.getElementById(`${data[name].id}`);
-            searchInptError.style.border = "1px solid red";
-            inputErrorFlag = true;
-          }
-          if (!condition && data[name].active) {
-            const searchInptError = document.getElementById(`${data[name].id}`);
-            searchInptError.style.border = `1px solid ${scheme?.color}`;
-            inputErrorFlag = false;
-          }
+          if (!data[name].active) return;
+          const searchInptError = document.getElementById(`${data[name].id}`);
+          const isValid = !condition;
+          markFieldInvalid(searchInptError, isValid, scheme?.color);
+          if (!isValid) inputErrorFlag = true;
+        };
+        const validateActiveField = (name, validator) => {
+          if (!data[name].active) return;
+          const searchInptError = document.getElementById(`${data[name].id}`);
+          const isValid =
+            data[name].value !== "" && validator(data[name].value);
+          markFieldInvalid(searchInptError, isValid, scheme?.color);
+          if (!isValid) inputErrorFlag = true;
         };
         errorCheck(data.name.value === "", "name");
-        errorCheck(
-          data.phone.value.length < 6 || data.phone.value.length > 20 === "",
-          "phone",
-        );
-        errorCheck(data.email.value.length < 5, "email");
+        validateActiveField("phone", isValidPhone);
+        validateActiveField("email", isValidEmail);
+        validateActiveField("inn", isValidInn);
         if (inputErrorFlag) {
           return;
         }
+        sendFormBtn.disabled = true;
         sendLead({
           title: data.title,
           source_host: data.source_host,
