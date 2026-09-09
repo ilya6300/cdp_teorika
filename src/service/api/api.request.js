@@ -3,6 +3,7 @@ import {
   teorikaFetchJSONApiV1,
   teorikaFetchJsonDC,
 } from "./api.config.js";
+import { buildCollectorBody } from "./collectorPayload.js";
 import { getCollectorHeaders, normalizeDomainHost } from "../../utils/domain.js";
 
 function normalizeUserData(data) {
@@ -50,11 +51,16 @@ function normalizeUserData(data) {
 // Инициализация пользователя в теорике
 export const teorikaInit = async () => {
   try {
+    const body = buildCollectorBody();
+    if (!body) {
+      return null;
+    }
+
     const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/init`, {
       method: "POST",
       credentials: "include",
       headers: getCollectorHeaders(),
-      body: JSON.stringify({ domain_url: normalizeDomainHost(window.location.hostname) }),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       console.error("Не удалось инициализировать пользователя в теорике", res);
@@ -68,8 +74,12 @@ export const teorikaInit = async () => {
 // Регистрация пользователя в теорике
 export const teorikaReg = async (data) => {
   try {
-    const _data = normalizeUserData(data);
-    await teorikaFetchJSONApiV1("POST", "datacollector/api/v1/user_info/reg_handler", _data);
+    const body = buildCollectorBody(normalizeUserData(data));
+    if (!body) {
+      return null;
+    }
+
+    await teorikaFetchJSONApiV1("POST", "datacollector/api/v1/user_info/reg_handler", body);
   } catch (error) {
     console.error("Ошибка регистрации в теорики:", error);
   }
@@ -80,11 +90,14 @@ export const teorikaAuth = async (_data) => {
   try {
     console.log("!teorikaAuth", _data);
     if (_data) {
-      const result = {
-        domain_url: normalizeDomainHost(window.location.hostname),
+      const body = buildCollectorBody({
         login: _data.login || _data.LOGIN || "",
-      };
-      await teorikaFetchJsonDC("POST", "datacollector/api/v1/user_info/auth_handler", result);
+      });
+      if (!body) {
+        return null;
+      }
+
+      await teorikaFetchJsonDC("POST", "datacollector/api/v1/user_info/auth_handler", body);
     }
   } catch (error) {
     console.error("Ошибка авторизации в теорике:", error);
@@ -94,11 +107,16 @@ export const teorikaAuth = async (_data) => {
 // Отправка данных о посещении страницы на сервер теорики
 export const sendPageTracking = async (data) => {
   try {
+    const body = buildCollectorBody(data);
+    if (!body) {
+      return null;
+    }
+
     const res = await fetch(`${teorikaConfig.url}datacollector/api/v1/user_info/page_visit`, {
       method: "POST",
       credentials: "include",
       headers: getCollectorHeaders(),
-      body: JSON.stringify(data),
+      body: JSON.stringify(body),
     });
     if (!res.ok) {
       console.error("Не удалось отправить данные на сервер", res);
