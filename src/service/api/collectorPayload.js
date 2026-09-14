@@ -2,7 +2,7 @@ import { getDeviceInfo, isValidDeviceType } from "../../utils/device.js";
 import { normalizeDomainHost } from "../../utils/domain.js";
 
 export const buildCollectorBody = (overrides = {}) => {
-  const { device_type } = getDeviceInfo();
+  const { device_type, description } = getDeviceInfo();
 
   if (!isValidDeviceType(device_type)) {
     console.error("collector: device_type отсутствует, запрос заблокирован");
@@ -12,6 +12,9 @@ export const buildCollectorBody = (overrides = {}) => {
   return {
     domain_url: normalizeDomainHost(window.location.hostname),
     device_type,
+    previous_page_url: document.referrer || "",
+    flowing_page_url: window.location.href,
+    description,
     ...overrides,
   };
 };
