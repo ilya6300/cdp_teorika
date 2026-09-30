@@ -48,20 +48,20 @@
 }
 
 .api_string_close_btn {
-  position: absolute;
-  height: 22px;
+  color: #226091;
+  background: #fff;
+  border-radius: 50%;
+  justify-content: center;
+  align-items: center;
   width: 22px;
-  /* border: 1px solid var(--accent-color); */
-  background: white;
+  height: 22px;
+  font-stretch: 125%;
+  transition: all 0.3s ease-in-out;
+  display: flex;
+  position: absolute;
   top: -90px;
   right: -35px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-stretch: expanded;
-  transition: all 0.3s ease-in-out;
-  color: #226091;
+  border: 1px solid var(--theme-base-color);
 }
 .api_string_close_btn:hover {
   color: white;
@@ -475,21 +475,20 @@
 }
 
 .api_string {
-  position: absolute !important;
-  bottom: 30px !important;
-  right: -25px;
-  border-radius: 16px 16px 3px 16px;
-  /* border: 2px solid var(--accent-color); */
-  background: white;
-  /* width: 0; */
-  animation: string_anim 1s ease-in forwards;
+  background: #fff;
+  border-radius: 16px 16px 3px;
   width: max-content;
   max-width: 80vw;
-  /* color: var(--accent-color); */
-  padding: 10px !important;
   height: auto;
+  animation: 1s ease-in forwards string_anim;
+  right: -25px;
   white-space: normal !important;
   word-break: break-word !important;
+  padding: 10px !important;
+  position: absolute !important;
+  bottom: 40px !important;
+  color: var(--theme-base-color) !important;
+  border: 1px solid var(--theme-base-color) !important;
 }
 
 .user_msg_my_bot {
