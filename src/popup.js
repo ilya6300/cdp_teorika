@@ -527,7 +527,7 @@ const renderScenarios = async (r) => {
               ]);
               const _div = createHtmlElement(
                 "div",
-                ["lid-bot-info", "api_string"],
+                ["api_string"],
                 {
                   textContent: string_data
                     .replace(/<div>/g, "")
@@ -548,9 +548,18 @@ const renderScenarios = async (r) => {
                 statFuncIncrement(event.id, "close");
                 _div_container.remove();
               };
-              const parent = document.querySelector(".lid-bot-info");
-              parent.append(_div_container);
-              statFuncIncrement(event.id, "view");
+              const appendChatString = (attempt = 0) => {
+                const parent = document.querySelector("#lid-bot-info");
+                if (!parent) {
+                  if (attempt < 80) {
+                    setTimeout(() => appendChatString(attempt + 1), 100);
+                  }
+                  return;
+                }
+                parent.append(_div_container);
+                statFuncIncrement(event.id, "view");
+              };
+              appendChatString();
             }
           };
 

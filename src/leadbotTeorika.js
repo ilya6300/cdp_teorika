@@ -184,7 +184,7 @@ const createScheme = (scheme) => {
     function createChatContainer() {
       const chatContainer = document.createElement("div");
       chatContainer.innerHTML = "";
-      chatContainer.classList.add("my_hidden");
+      chatContainer.classList.add("my_hidden", "lid-bot-panel");
 
       chatContainer.append(myHedderLidBot, myBodyChat);
       return chatContainer;
@@ -197,7 +197,11 @@ const createScheme = (scheme) => {
       infoChat.classList.add("lid-bot-info");
       infoChat.style.background = scheme?.color;
       infoChat.id = "lid-bot-info";
-      infoChat.textContent = scheme?.info_string;
+      infoChat.classList.remove("my_hidden");
+      const mainInfoText = document.createElement("span");
+      mainInfoText.classList.add("lid-bot-info-main");
+      mainInfoText.textContent = scheme?.info_string ?? "";
+      infoChat.append(mainInfoText);
       return infoChat;
     }
     // создание контейнера тела чата
@@ -463,22 +467,20 @@ const createScheme = (scheme) => {
     async function renderLidBot(scheme) {
       try {
         createData();
-        const searchChatContainer = document.querySelector(
-          ".lid-bot-container-hidden",
-        );
-        const searchMyHiiden = document.querySelector(".my_hidden");
         let preservedScenarioStrings = [];
-        if (searchChatContainer !== null) {
-          preservedScenarioStrings = [
-            ...searchChatContainer.querySelectorAll(
-              "#lid-bot-info .teoririka_relative",
-            ),
-          ];
-          searchChatContainer.remove();
-        }
-        if (searchMyHiiden !== null) {
-          searchMyHiiden.remove();
-        }
+        document
+          .querySelectorAll(".lid-bot-container-hidden")
+          .forEach((container) => {
+            preservedScenarioStrings.push(
+              ...container.querySelectorAll(
+                "#lid-bot-info .teoririka_relative",
+              ),
+            );
+            container.remove();
+          });
+        document.querySelectorAll(".lid-bot-panel").forEach((panel) => {
+          panel.remove();
+        });
         const chatHiddenContainer = document.createElement("div");
         chatHiddenContainer.classList.add("lid-bot-container-hidden");
         chatHiddenContainer.append(myChatIcon);

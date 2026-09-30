@@ -60,13 +60,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (teorikaAuth) window.teorikaAuth = teorikaAuth;
 
-    // return;
-    if (checkScenarios) {
-      await checkScenarios(teorikaConfig);
+    if (startScheme) {
+      try {
+        await startScheme();
+      } catch (error) {
+        console.error("Ошибка инициализации чат-бота:", error);
+      }
     }
 
-    if (startScheme) {
-      await startScheme();
+    if (checkScenarios) {
+      try {
+        await checkScenarios(teorikaConfig);
+      } catch (error) {
+        console.error("Ошибка сценариев CDP:", error);
+      }
     }
 
     // const dateCookie = await getDataLocal("registration_form_data");
