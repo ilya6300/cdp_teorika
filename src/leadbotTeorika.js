@@ -467,7 +467,13 @@ const createScheme = (scheme) => {
           ".lid-bot-container-hidden",
         );
         const searchMyHiiden = document.querySelector(".my_hidden");
+        let preservedScenarioStrings = [];
         if (searchChatContainer !== null) {
+          preservedScenarioStrings = [
+            ...searchChatContainer.querySelectorAll(
+              "#lid-bot-info .teoririka_relative",
+            ),
+          ];
           searchChatContainer.remove();
         }
         if (searchMyHiiden !== null) {
@@ -477,6 +483,9 @@ const createScheme = (scheme) => {
         chatHiddenContainer.classList.add("lid-bot-container-hidden");
         chatHiddenContainer.append(myChatIcon);
         chatHiddenContainer.append(myInfoChat);
+        preservedScenarioStrings.forEach((node) => {
+          myInfoChat.append(node);
+        });
         lidBot.append(chatHiddenContainer, myChatContainer);
         if (scheme?.first_message !== "") {
           createMessageBot({ text: scheme?.first_message });
@@ -501,5 +510,3 @@ const createScheme = (scheme) => {
     console.error(e);
   }
 };
-
-startScheme();
