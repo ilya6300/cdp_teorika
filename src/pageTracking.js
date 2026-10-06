@@ -51,12 +51,10 @@ export function initPageTracking() {
   // debugElements(buildVisitPayload());
   pageStartTime = Date.now();
   hasSaved = false;
-  // saveVisit()
   // pagehide — переход, закрытие вкладки, перезагрузка
   window.addEventListener("pagehide", saveVisit);
   // fallback для браузеров, где pagehide не срабатывает
   window.addEventListener("beforeunload", saveVisit);
-
   window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
       pageStartTime = Date.now();

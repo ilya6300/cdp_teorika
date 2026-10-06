@@ -8,9 +8,7 @@ const dubugURL = $https
   : "http://10.76.10.145:5059/";
 
 export const teorikaConfig = {
-  // urlApiV1: "https://teorika.ru/api/v1/v1/",
   url: !debugMode ? "https://teorika.ru/" : dubugURL,
-  // urlDC: !debugMode ?"https://teorika.ru/api/v1/dc/dc/" : "http://10.76.10.145:5059/api/v1/dc/dc/",
 };
 
 // Регистрация в cdp

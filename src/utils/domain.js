@@ -4,5 +4,4 @@ export const normalizeDomainHost = (hostname) => {
 
 export const getCollectorHeaders = () => ({
   "Content-Type": "application/json",
-  // "X-Domain-Url": normalizeDomainHost(window.location.hostname),
 });

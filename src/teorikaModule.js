@@ -34,10 +34,6 @@ const getDataLocal = async (name) => {
   }
 };
 
-// window.getСookiesID = getСookiesID;
-
-// window.getDateCookie = getDateCookie;
-
 initPageTracking();
 
 const injectStyles = () => {
@@ -75,16 +71,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Ошибка сценариев CDP:", error);
       }
     }
-
-    // const dateCookie = await getDataLocal("registration_form_data");
-
-    // if (dateCookie) {
-    //   if (dateCookie.event === "registration") {
-    //     await teorikaReg(dateCookie);
-    //   } else if (dateCookie.event === "auth") {
-    //     await teorikaAuth(dateCookie);
-    //   }
-    // }
   } catch (error) {
     console.error("Ошибка виджета теорики:", error);
   }

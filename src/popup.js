@@ -8,11 +8,8 @@ import {
 
 const teorikaPopup = document.querySelector("#lid-bot-container-hidden");
 const teoConfig = {
-  // url: "https://teorika.ru/api/v1/",
   url: teorikaConfig.url + "api/v1/",
-  // url: "https://teorika.ru/api/v1/",
   urlDC: teorikaConfig.url + "api/dc/dc/",
-  // url: null,
   id: null,
   idEvent: null,
   clickStat: 0,
@@ -284,8 +281,7 @@ const renderScenarios = async (r) => {
     if (eventAll) {
       eventAll.forEach((event) => {
         if (!teoConfig.viewAllowed) return;
-        // const activUrl = window.location.href.replace(/\/$/, '').includes(event.url.replace(/\s+/g, ''));
-        const activUrl = window.location.href.includes(
+          const activUrl = window.location.href.includes(
           event.url.replace(/\s+/g, ""),
         );
         if ((event && activUrl) || event.url === "") {
@@ -366,9 +362,6 @@ const renderScenarios = async (r) => {
                 const popupConstructorClick = async () => {
                   if (popupSubmitInProgress) return;
                   if (!teoConfig.policyAllowed) {
-                    // const inptPolicyTeorika_ = document.querySelector(
-                    //   "#inpt_policy_teorika_",
-                    // );
                     cookiePolitics.style.borderBottom = "1px solid red";
                     return;
                   }
@@ -385,12 +378,8 @@ const renderScenarios = async (r) => {
                   let btnIDPopup_ = "";
 
                   // Получение переменных с сайта
-                  // if (getСookiesValue("sourceDomain")) {
                   dateRequest.source_host = "CDP";
-                  // }
-                  // if (getСookiesValue("entryUrl")) {
                   dateRequest.application_page = window.location.href;
-                  // }
                   if (getСookiesValue("roistat_visit")) {
                     dateRequest.roistat = getСookiesValue("roistat_visit");
                   }
@@ -450,7 +439,6 @@ const renderScenarios = async (r) => {
                       }
                       if (event.data.type_event === "Bitrix24_lead_teorika_") {
                         btnIDPopup_ = "lead";
-                        // dateRequest.comments = "";
                       }
                       if (event.data.type_event === "Bitrix24_tasks_teorika_") {
                         btnIDPopup_ = "task";
@@ -565,7 +553,6 @@ const renderScenarios = async (r) => {
 
           setTimeout(() => {
             renderEvent();
-            // clearInterval(intervalID);
           }, event.timeout);
         }
       });
