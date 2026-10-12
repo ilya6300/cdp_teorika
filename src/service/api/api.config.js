@@ -1,6 +1,6 @@
 import { getCollectorHeaders } from "../../utils/domain.js";
 
-const debugMode = true;
+const debugMode = false;
 const $https = true;
 
 const dubugURL = $https
